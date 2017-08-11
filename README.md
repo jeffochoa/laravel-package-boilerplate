@@ -213,3 +213,7 @@ node_modules/
 You just need to edit your personal info in the `composer.json` file, and run a quick search into the package folder to change the `NamespaceHolder` string by your custom namespace ant that's it.
 
 Have fun! 🎊
+
+## Credits
+
+Thanks to [Daniel Coulbourne](https://twitter.com/DCoulbourne) and [Matt Stauffer](https://twitter.com/stauffermatt). This package was inspired by their work on [tightenco/ziggy](https://github.com/tightenco/ziggy) a package to use Laravel routes in Javascript.
