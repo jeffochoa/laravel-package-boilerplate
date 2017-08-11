@@ -1,0 +1,36 @@
+{
+    "name": "jeffochoa/laravel-package-boilerplate",
+    "description": "A simple boilerplate to create new laravel packages.",
+    "type": "library",
+    "version": "1.0.0-dev",
+    "require": {
+        "laravel/framework": "^5.4.29"
+    },
+    "require-dev": {
+        "vlucas/phpdotenv": "^2.4",
+        "orchestra/testbench": "^3.4"
+    },
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Jefferson Ochoa (Jeff)"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "NamespaceHolder\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "NamespaceHolder\\Tests\\": "tests/"
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "NamespaceHolder\\Providers\\PackageServiceProvider"
+            ]
+        }
+    }
+}
