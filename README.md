@@ -63,7 +63,12 @@ Is recommended to include a `.LICENCE` file to every new project. If you are wor
 Here you can find more info about how to [How to Choose an open source licence](https://choosealicense.com/)
 
 ## Testing
-This boilerplate uses orchestral/testbench](https://github.com/orchestral/testbench) which is a "Laravel Testing Helper for Packages Development".
+Create a new `phpunit.xml` file with:
+```bash
+$ cp phpunit.xml.dist phpunit.xml
+```
+
+This boilerplate uses [orchestral/testbench](https://github.com/orchestral/testbench) which is a "Laravel Testing Helper for Packages Development".
 
 After install the dependencies you can run all the tests by excecuting the follow command:
 
