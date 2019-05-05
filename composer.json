@@ -1,35 +1,36 @@
 {
-    "name": "jeffochoa/laravel-package-boilerplate",
-    "description": "A simple boilerplate to create new laravel packages.",
+    "name": "square1/response-cache",
+    "description": "Cache laravel reponses.",
     "type": "library",
     "version": "1.0.0-dev",
     "require": {
-        "laravel/framework": "^5.7"
+        "laravel/framework": "^5.8",
+        "predis/predis": "^1.1"
     },
     "require-dev": {
-        "vlucas/phpdotenv": "^2.2",
-        "orchestra/testbench": "^3.7"
+        "orchestra/testbench": "^3.8"
     },
     "license": "MIT",
     "authors": [
         {
-            "name": "Jefferson Ochoa (Jeff)"
+            "name": "Jefferson Ochoa (Jeff)",
+            "email": "jeff@square1.io"
         }
     ],
     "autoload": {
         "psr-4": {
-            "NamespaceHolder\\": "src/"
+            "Square1\\ResponseCache\\": "src/"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "NamespaceHolder\\Tests\\": "tests/"
+            "Square1\\ResponseCache\\Tests\\": "tests/"
         }
     },
     "extra": {
         "laravel": {
             "providers": [
-                "NamespaceHolder\\Providers\\PackageServiceProvider"
+                "Square1\\ResponseCache\\Providers\\ResponseCacheServiceProvider"
             ]
         }
     }

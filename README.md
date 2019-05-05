@@ -1,224 +1,113 @@
-# Laravel package boilerplate
-A simple boilerplate to create new laravel packages.
+# Square1\ResponseCache
 
-## Installation
-Before to start you'll need to clone/download this package locally and then run from the terminal
-```bash
-$ composer install
-```
+This package allows to store an entire response in cache, adding some useful headers commonly used by third party services like varnish, CloudFlare and so.
 
-This will install all the dependencies
+## Install
 
-## Composer.json
-
-Basic structure:
-
-```json
-{
-    "name": "namespace/package-name",
-    "description": "Package description",
-    "type": "library",
-    "version": "1.0.0-dev",
-    "license": "MIT",
-    "require": {
-        "laravel/framework": "^5.4.29"
-    },
-    "require-dev": {
-        "vlucas/phpdotenv": "^2.4",
-        "orchestra/testbench": "^3.4"
-    },
-    "autoload": {
-        "psr-4": {
-            "NamespaceHolder\\": "src/"
-        }
-    },
-    "autoload-dev": {
-        "psr-4": {
-            "NamespaceHolder\\Tests\\": "tests/"
-        }
-    }
-}
-```
-
-## Version
-According to the composer docs the [version](https://getcomposer.org/doc/04-schema.md#version):
-
->must follow the format of X.Y.Z or vX.Y.Z with an optional suffix of
->-dev, -patch (-p), -alpha (-a), -beta (-b) or -RC. The patch, alpha, beta and
->RC suffixes can also be followed by a number.
->Examples:
-> * 1.0.0
-> * 1.0.2
-> * 0.1.0
-> * 0.2.5
-> * 1.0.0-dev
-> * 1.0.0-alpha3
-> * 1.0.0-beta2
-> * 1.0.0-RC5
-> * v2.0.4-p1
-
-## Licence
-Is recommended to include a `.LICENCE` file to every new project. If you are working in a open source project, then you can pick one from the `extra` folder, move it to the root folder and rename the file to `.LICENCE`.
-
-Here you can find more info about how to [How to Choose an open source licence](https://choosealicense.com/)
-
-## Testing
-Create a new `phpunit.xml` file with:
-```bash
-$ cp phpunit.xml.dist phpunit.xml
-```
-
-This boilerplate uses [orchestral/testbench](https://github.com/orchestral/testbench) which is a "Laravel Testing Helper for Packages Development".
-
-After install the dependencies you can run all the tests by excecuting the follow command:
+Using Composer
 
 ```bash
-$ vendor/bin/phpunit
+composer require square1/response-cache
 ```
 
-The output should look similar to this:
-
-```bash
-.                                                                  1 / 1 (100%)
-
-Time: 84 ms, Memory: 12.00MB
-
-OK (1 test, 1 assertion)
-
-
-```
-
-All the test files should be inside the `tests/` directory. Here is an example:
+Once installed, please add the cache-middleware to your `kernel.php` file:
 
 ```php
-
-<?php
-
-namespace NamespaceHolder\Tests\Unit;
-
-use NamespaceHolder\Tests\TestCase;
-
-class ExampleTest extends TestCase
-{
-    /** @test */
-    public function example_test_method()
-    {
-        $this->assertTrue(true);
-    }
-}
-
+protected $routeMiddleware = [
+    //...
+    'cache' = \Square1\ResponseCache\Middleware\ResponseCacheMiddleware::class,
+    //...
+];
 ```
 
-## Installing as a dependency on a laravel project
-Is very likely you'll need to install this package locally to test the integration. You can do so by adding the follow to the `composer.json` file in your laravel project.
+## Usage
 
-```json
-    "repositories": [
-        {
-            "type": "path",
-            "url": "path/to/package/folder"
-        }
-    ],
+Add the middleware to the route or group of routes you want to cache:
+
+```php
+Route::get('/my-route', 'MyController')->middleware('cache');
 ```
 
-Then, in your laravel project root path you can just run:
+## Cache Profiles
 
-```bash
-$ composer require namespace/package-name
-```
-
-## Configuration
-Since we are trying to building a new laravel package, is a good idea to pull all the configuration files inside the `/config` folder to keep a laravel-like folder structure.
-
-## Bootstrapping
-Ideally you'll build this new package using [#TDD](https://en.wikipedia.org/wiki/Test-driven_development), so in order to load all the dependencies a bootstrap.php was added inside the tests directory with the escencial configuration.
+The cache profiles will give you full control on how to add or remove any particular route from the cache
 
 ```php
 <?php
 
-require __DIR__.'/../vendor/autoload.php';
+namespace App\CacheProfiles;
 
-date_default_timezone_set('UTC');
+use Square1\ResponseCache\Profiles\BaseCacheProfile
 
-```
+class ArticleCacheProfile extends BaseCacheProfile {
+    /** time in seconds **/
+    protected $ttl = 3600;
 
-## Service Provider
-With laravel is really easy to integrate or install any package. Is recomended to use a service provider if you want to bind things into laravel's service container.
-Here you can find more info about the [Laravel service providers](https://laravel.com/docs/5.4/packages#service-providers)
+    /** Tags to 'flush' when removed **/
+    protected $flushCacheTags = [];
 
-```php
-<?php
+    /** Current profile identifier tags **/
+    protected $cacheTags = [];
 
-namespace NamespaceHolder\Providers;
-
-use Illuminate\Support\ServiceProvider;
-
-class PackageServiceProvider extends ServiceProvider
-{
-    /**
-     * Register bindings in the container.
-     */
-    public function register()
-    {
-        //
-    }
+    /** Cache any response with the following statuses **/
+    protected $cacheStatus = [200];
 
     /**
-     * Perform post-registration booting of services.
-     */
-    public function boot()
+     * Decide wether the current request should be cached or not
+     * @param Illuminate\Http\Request $request
+     * return boolean
+     **/
+    public function shouldBeCached(Request $request)
     {
-        // If you need to copy a config file to the laravel project
-        $this->publishes([
-            __DIR__.'/path/to/config/file.php' => config_path('file.php'),
-        ]);
+        return $request->isMethod('GET');
     }
 }
-
 ```
 
-## Laravel Package Auto discovering
-This is a new feature added recently to the laravel framework, now you can just install this package thru composer and is going to be automatically registered in the laravel project. To do so you need to add this section in the package `composer.json` file:
+## Remove a response from the cache
 
-```json
-    "extra": {
-        "laravel": {
-            "providers": [
-                "NamespaceHolder\\Providers\\PackageServiceProvider"
-            ]
-        }
-    }
+By creating a new instance of the cache-profile you can get and remove any request from the cache:
+
+```php
+    $profile = new ArticleCacheProfile($request);
+
+    $responseCache = resolve(ResponseCache::class);
+
+    $responseCache->withTags($profile->getTags())->flush();
 ```
 
-And you can also register multiple alias with:
-```json
-    "extra": {
-        "laravel": {
-            "providers": [
-                "NamespaceHolder\\Providers\\PackageServiceProvider"
-            ]
-        },
-        "aliases": {
-            "Bar": "Foo\\Bar\\Facade"
-        }
-    }
+You can use the `$flushCacheTags` attribute in your cache-profile to reference other profile tags, like so:
+
+```php
+class ArticleCacheProfile {
+    protected $cacheTags = ['article'];
+    protected $flushCacheTags = ['homepage', 'category-page'];
+}
+
+class HomeCacheProfile {
+    protected $cacheTags = ['homepage'];
+}
+
+class CategoriesCacheProfile {
+    protected $cacheTags = ['category-page'];
+}
 ```
 
-## Git
-A .gitignore file is included with the most common and basic setup
+Using that crossed reference, now you could for instance, remove the "homepage" and "category-page" from the cache while removing any "article" from the cache, like so:
+
+```php
+    $profile = new ArticleCacheProfile($request);
+
+    $cacheResponse = resolve(CacheResponse::class);
+
+    /** Clear the cache for a given URL */
+    $cacheResponse->withTags($profile->getTags())->forget(url('/some-article-url'));
+
+    // Flush the cache for ALL the referenced routes ('homepage' and 'category-page')
+    Cache::tags($profile->getFlushCacheTags())->flush();
 ```
-vendor/
-composer.lock
-phpunit.xml
-node_modules/
-.idea
-```
 
-## Make it yours!
-You just need to edit your personal info in the `composer.json` file, and run a quick search into the package folder to change the `NamespaceHolder` string by your custom namespace ant that's it.
+## Roadmap
 
-Have fun! 🎊
-
-## Credits
-
-Thanks to [Daniel Coulbourne](https://twitter.com/DCoulbourne) and [Matt Stauffer](https://twitter.com/stauffermatt). This package was inspired by their work on [tightenco/ziggy](https://github.com/tightenco/ziggy) a package to use Laravel routes in Javascript.
+- Package auto-discovery
+- open a new 'PURGE' route
