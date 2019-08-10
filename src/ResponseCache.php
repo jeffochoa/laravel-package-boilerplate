@@ -64,9 +64,10 @@ class ResponseCache
     protected function addHeaders($response, $seconds)
     {
         $currentTime = Carbon::now();
+        $expirationTime = Carbon::now()->addSeconds($seconds);
         $response->setLastModified($currentTime);
-        $response->setETag(md5($currentTime->addSeconds($seconds)));
-        $response->setExpires($currentTime->addSeconds($seconds));
+        $response->setETag(md5($expirationTime));
+        $response->setExpires($expirationTime);
         $response->setTtl($seconds);
         $response->setPublic();
         $response->setMaxAge($seconds);
