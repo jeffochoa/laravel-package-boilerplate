@@ -4,11 +4,11 @@
     "type": "library",
     "version": "1.0.0-dev",
     "require": {
-        "laravel/framework": "^5.8",
-        "predis/predis": "^1.1"
+        "predis/predis": "^1.1",
+        "laravel/framework": "^6.0"
     },
     "require-dev": {
-        "orchestra/testbench": "^3.8"
+        "orchestra/testbench": "^4.0"
     },
     "license": "MIT",
     "authors": [
