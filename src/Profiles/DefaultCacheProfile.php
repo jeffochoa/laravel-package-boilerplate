@@ -2,7 +2,8 @@
 
 namespace Square1\ResponseCache\Profiles;
 
-class DefaultCacheProfile extends BaseCacheProfile {
+class DefaultCacheProfile extends BaseCacheProfile
+{
 
     public function __construct()
     {

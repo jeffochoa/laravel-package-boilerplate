@@ -36,7 +36,8 @@ class ResponseCacheServiceProvider extends ServiceProvider
     protected function loadConfig()
     {
         $this->mergeConfigFrom(
-            __DIR__.'/../config/response-cache.php', 'response-cache'
+            __DIR__.'/../config/response-cache.php',
+            'response-cache'
         );
     }
 
