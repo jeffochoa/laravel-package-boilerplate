@@ -48,7 +48,11 @@ class ResponseCache
     public function store($response, $request, $seconds)
     {
         $response = $this->addHeaders($this->clone($response), $seconds);
-        return $this->cacheRepository->put($this->hasher->make($request), $this->serialize($response, $seconds), $seconds);
+        return $this->cacheRepository->put(
+            $this->hasher->make($request),
+            $this->serialize($response, $seconds),
+            $seconds
+        );
     }
 
     /**

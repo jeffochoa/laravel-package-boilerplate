@@ -4,7 +4,8 @@ namespace Square1\ResponseCache\Profiles;
 
 use Illuminate\Http\Request;
 
-abstract class BaseCacheProfile {
+abstract class BaseCacheProfile
+{
     protected $ttl;
 
     protected $flushCacheTags = [];
@@ -18,11 +19,13 @@ abstract class BaseCacheProfile {
         $this->ttl = $seconds;
     }
 
-    public function setCacheTags(array $tags) {
+    public function setCacheTags(array $tags)
+    {
         $this->cacheTags = $tags;
     }
 
-    public function getFlushCacheTags() {
+    public function getFlushCacheTags()
+    {
         return $this->flushCacheTags;
     }
 
@@ -33,7 +36,7 @@ abstract class BaseCacheProfile {
 
     public function getTags()
     {
-        return array_merge($this->cacheTags,  $this->flushCacheTags);
+        return array_merge($this->cacheTags, $this->flushCacheTags);
     }
 
     public function hasTags()

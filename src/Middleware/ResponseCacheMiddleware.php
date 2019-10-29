@@ -6,11 +6,13 @@ use Closure;
 use Exception;
 use Square1\ResponseCache\ResponseCache;
 
-class ResponseCacheMiddleware {
-    public function handle($request, Closure $next, string $profile = 'default') {
+class ResponseCacheMiddleware
+{
+    public function handle($request, Closure $next, string $profile = 'default')
+    {
 
         if (($profile = config("response-cache.profiles.{$profile}", false)) == false) {
-            Throw new Exception("The profile $profile was not found in the config('response-cache.profiles') array.");
+            throw new Exception("The profile $profile was not found in the config('response-cache.profiles') array.");
         }
 
         $profile = new $profile($request);
